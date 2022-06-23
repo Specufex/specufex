@@ -11,4 +11,7 @@ RUN cd /home/scoped/specufex \
     && pip install -e . \
     && docker-clean
 
+USER ${NB_UID}
+WORKDIR "${HOME}"
 
+EXPOSE 8888
