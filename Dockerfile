@@ -1,24 +1,14 @@
-#FROM jupyter/scipy-notebook:lab-3.4.2
 
-# build obspy
-FROM python:3.10-slim-bullseye as builder
-RUN apt-get update
-RUN apt-get install -y --no-install-recommends gcc build-essential
+FROM ghcr.io/seisscoped/container-base
 
-RUN pip wheel --wheel-dir=/opt/wheels --no-deps obspy
+LABEL maintainer="Nate Groebner"
 
-# now build the working image
-# base image is a custom implementation of jupyter/scipy-notebook
-FROM public.ecr.aws/c8c6r3q4/jupyterlab-slim:v0.1
+RUN cd /home/scoped \
+    && git clone --branch main https://github.com/specufex/specufex
 
-COPY --from=builder /opt/wheels /opt/wheels
+RUN cd /home/scoped/specufex \
+    && conda install --file requirements.txt \
+    && pip install -e . \
+    && docker-clean
 
-USER root
-WORKDIR /opt
-COPY . /opt/specufex
-RUN pip install /opt/specufex lxml && \
-    pip install --no-index --find-links=/opt/wheels obspy
-
-USER ${NB_UID}
-WORKDIR "${HOME}"
 
