@@ -1,4 +1,4 @@
-![SCOPED](https://img.shields.io/endpoint?url=https://runkit.io/wangyinz/scoped/branches/master/specufex)
+![SCOPED](https://img.shields.io/endpoint?url=https://runkit.io/wangyinz/scoped/branches/master/Specufex)
 
 # SpecUFEx
 
