@@ -20,6 +20,8 @@ cd specufex
 pip install .
 ```
 
+Alternatively, a Dockerfile is included that builds a container running Jupyterlab with an environment setup for SpecUFEx.
+
 ## Usage
 
 ### Fitting models and transforming data
