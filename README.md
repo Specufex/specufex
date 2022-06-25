@@ -20,7 +20,7 @@ cd specufex
 pip install .
 ```
 
-Alternatively, a Dockerfile is included that builds a container running Jupyterlab with an environment setup for SpecUFEx. A prebuilt container is available through the [SCOPED](https://github.com/SeisSCOPED) project (here)[https://github.com/SeisSCOPED/specufex/pkgs/container/specufex]. Or you can directly pull the container if you have Docker:
+Alternatively, a Dockerfile is included that builds a container running Jupyterlab with an environment setup for SpecUFEx. A prebuilt container is available through the [SCOPED](https://github.com/SeisSCOPED) project [here](https://github.com/SeisSCOPED/specufex/pkgs/container/specufex). Or you can directly pull the container if you have Docker:
 
 ```bash
 docker pull ghcr.io/seisscoped/specufex:latest
