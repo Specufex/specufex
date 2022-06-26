@@ -1,11 +1,13 @@
-import numpy as np
 import h5py
-from scipy.stats import gamma
-from scipy.special import psi
-from scipy.cluster.hierarchy import linkage, leaves_list
-from scipy.spatial.distance import pdist
+import numpy as np
 from numpy.linalg import inv, matrix_power
+from scipy.cluster.hierarchy import leaves_list, linkage
+from scipy.spatial.distance import pdist
+from scipy.special import psi
+from scipy.stats import gamma
+
 from .modelutils import SaveableModel
+
 
 class BayesianHMM(SaveableModel):
 
@@ -31,7 +33,9 @@ class BayesianHMM(SaveableModel):
         0 for no output, >0 for output
     """
 
-    def __init__(self, num_pat, gain, num_state=15, max_inner_ite=20, Neff=100000, verbose=0):
+    def __init__(
+        self, num_pat, gain, num_state=15, max_inner_ite=20, Neff=100000, verbose=0
+    ):
 
         self.num_state = num_state
         self._max_inner_ite = max_inner_ite
@@ -41,16 +45,17 @@ class BayesianHMM(SaveableModel):
         self.num_pat = num_pat
         self.gain = gain
 
-        self.tauPpi = .01/self.num_state
-        self.tauA = .1/self.num_state
-        self.tau1 = .1
-        self.tau2 = .1
+        self.tauPpi = 0.01 / self.num_state
+        self.tauA = 0.1 / self.num_state
+        self.tau1 = 0.1
+        self.tau2 = 0.1
 
-        self.B1 = (self.Neff)*1000*gamma.rvs(np.ones((self.num_state, self.num_pat)),1)
-        self.B2 = (self.Neff)*1000*.03*np.ones((self.num_state,self.num_pat))
+        self.B1 = (
+            (self.Neff) * 1000 * gamma.rvs(np.ones((self.num_state, self.num_pat)), 1)
+        )
+        self.B2 = (self.Neff) * 1000 * 0.03 * np.ones((self.num_state, self.num_pat))
 
         self.step = 0
-
 
     def fit(self, V, resort_EB="energy"):
         """Fit the hidden Markov model.
@@ -91,58 +96,67 @@ class BayesianHMM(SaveableModel):
 
         for step, Vi in enumerate(V):
             self.step += step
-            n = int(np.round(1 + 10*.75**(self.step-1)))
+            n = int(np.round(1 + 10 * 0.75 ** (self.step - 1)))
             ElnB = psi(self.B1) - np.log(self.B2)
-            EB = self.B1/self.B2
+            EB = self.B1 / self.B2
             Bup1 = np.zeros_like(self.B1)
             Bup2 = np.zeros_like(self.B2)
             Atmp = np.zeros((self.num_state, self.num_state))
 
-            len_seq = Vi.shape[1] # number of timesteps
+            len_seq = Vi.shape[1]  # number of timesteps
             # gain is the EW matrix summed along 0th dimension
-            V2 = np.diag(self.gain) @ Vi # scaling the right matrix, for HMM
+            V2 = np.diag(self.gain) @ Vi  # scaling the right matrix, for HMM
 
             A = np.ones((self.num_state, self.num_state))
             Ppi = np.ones(self.num_state)
             for ite in range(self._max_inner_ite):
-                expElnA = np.exp(psi(A) - psi(A.sum(1))) # convert each row to prob dist, find exp of ElnA
-                expElnPi = np.exp(psi(Ppi) - psi(Ppi.sum())) # same for Pi (int dist)
-                lnPrH = ElnB @ V2 - EB.sum(1)[:,np.newaxis]
-                lnPrH = lnPrH - np.max(lnPrH, axis=0)[np.newaxis,:] # convert to prob by dividing by max
+                expElnA = np.exp(
+                    psi(A) - psi(A.sum(1))
+                )  # convert each row to prob dist, find exp of ElnA
+                expElnPi = np.exp(psi(Ppi) - psi(Ppi.sum()))  # same for Pi (int dist)
+                lnPrH = ElnB @ V2 - EB.sum(1)[:, np.newaxis]
+                lnPrH = (
+                    lnPrH - np.max(lnPrH, axis=0)[np.newaxis, :]
+                )  # convert to prob by dividing by max
                 explnPrH = np.exp(lnPrH)
 
                 # forward-backward algorithm
-                alpha = np.zeros((self.num_state,len_seq))
-                beta = np.zeros((self.num_state,len_seq))
-                alpha[:,0] = expElnPi*explnPrH[:,0]
-                beta[:,len_seq-1] = 1
-                for s in range(1,len_seq):
-                    alpha[:,s] = (expElnA.T @ alpha[:,s-1])*explnPrH[:,s]
-                    alpha[:,s] = alpha[:,s]/np.sum(alpha[:,s])
-                    beta[:,len_seq-s-1] = expElnA@(beta[:,len_seq-s]*explnPrH[:,len_seq-s])
-                    beta[:,len_seq-s-1] = beta[:,len_seq-s]/np.sum(beta[:,len_seq-s])
-                gam = alpha*beta
-                gam = gam/gam.sum(0)
-                Ppi = self.tauPpi + gam[:,0]
-                A = 0*A + self.tauA
-                for s in range(1,len_seq):
-                    mat = expElnA*np.outer(alpha[:,s-1],beta[:,s]*explnPrH[:,s])
-                    mat = mat/mat.sum()
+                alpha = np.zeros((self.num_state, len_seq))
+                beta = np.zeros((self.num_state, len_seq))
+                alpha[:, 0] = expElnPi * explnPrH[:, 0]
+                beta[:, len_seq - 1] = 1
+                for s in range(1, len_seq):
+                    alpha[:, s] = (expElnA.T @ alpha[:, s - 1]) * explnPrH[:, s]
+                    alpha[:, s] = alpha[:, s] / np.sum(alpha[:, s])
+                    beta[:, len_seq - s - 1] = expElnA @ (
+                        beta[:, len_seq - s] * explnPrH[:, len_seq - s]
+                    )
+                    beta[:, len_seq - s - 1] = beta[:, len_seq - s] / np.sum(
+                        beta[:, len_seq - s]
+                    )
+                gam = alpha * beta
+                gam = gam / gam.sum(0)
+                Ppi = self.tauPpi + gam[:, 0]
+                A = 0 * A + self.tauA
+                for s in range(1, len_seq):
+                    mat = expElnA * np.outer(
+                        alpha[:, s - 1], beta[:, s] * explnPrH[:, s]
+                    )
+                    mat = mat / mat.sum()
                     A = A + mat
-                    if ite == self._max_inner_ite-1:
-                        Bup1 = Bup1 + np.outer(gam[:,s], V2[:,s])
-                        Bup2 = Bup2 + gam[:,s][:,np.newaxis]
+                    if ite == self._max_inner_ite - 1:
+                        Bup1 = Bup1 + np.outer(gam[:, s], V2[:, s])
+                        Bup2 = Bup2 + gam[:, s][:, np.newaxis]
 
             Atmp = Atmp + A
-            Bup1 = Bup1 + np.outer(gam[:,0], V2[:,0])
-            Bup2 = Bup2 + gam[:,0][:,np.newaxis]
+            Bup1 = Bup1 + np.outer(gam[:, 0], V2[:, 0])
+            Bup2 = Bup2 + gam[:, 0][:, np.newaxis]
 
-            rho = (250/(1+5*(n-1)) + self.step)**(-0.51)
-            self.B1 = (1-rho)*self.B1 + rho*(self.tau1 + (self.Neff/n)*Bup1)
-            self.B2 = (1-rho)*self.B2 + rho*(self.tau2 + (self.Neff/n)*Bup2)
-            self.EB = self.B1/self.B2
+            rho = (250 / (1 + 5 * (n - 1)) + self.step) ** (-0.51)
+            self.B1 = (1 - rho) * self.B1 + rho * (self.tau1 + (self.Neff / n) * Bup1)
+            self.B2 = (1 - rho) * self.B2 + rho * (self.tau2 + (self.Neff / n) * Bup2)
+            self.EB = self.B1 / self.B2
             self.ElnB = psi(self.B1) - np.log(self.B2)
-
 
             """if verbose > 0:
                 print('step {}/{}'.format(step, len(V)))
@@ -154,7 +168,6 @@ class BayesianHMM(SaveableModel):
             self._sort_EB_by_distance()
         if resort_EB == "energy":
             self._sort_EB_by_energy()
-
 
     def _getStateMatrices(self, V):
         """
@@ -179,35 +192,41 @@ class BayesianHMM(SaveableModel):
         for Vi in V:
 
             len_seq = Vi.shape[1]
-            V2 = np.diag(self.gain)@Vi # pull this outside of loop?
+            V2 = np.diag(self.gain) @ Vi  # pull this outside of loop?
 
             A = np.ones((self.num_state, self.num_state))
             Ppi = np.ones(self.num_state)
             for _ in range(self._max_inner_ite):
                 expElnA = np.exp(psi(A) - psi(A.sum(1)))
                 expElnPi = np.exp(psi(Ppi) - psi(Ppi.sum()))
-                lnPrH = self.ElnB @ V2 - self.EB.sum(1)[:,np.newaxis]
-                lnPrH = lnPrH - np.max(lnPrH, axis=0)[np.newaxis,:]
+                lnPrH = self.ElnB @ V2 - self.EB.sum(1)[:, np.newaxis]
+                lnPrH = lnPrH - np.max(lnPrH, axis=0)[np.newaxis, :]
                 explnPrH = np.exp(lnPrH)
 
                 # forward-backward
-                alpha = np.zeros((self.num_state,len_seq))
-                beta = np.zeros((self.num_state,len_seq))
-                alpha[:,0] = expElnPi*explnPrH[:,0]
-                beta[:,len_seq-1] = 1
-                for s in range(1,len_seq):
-                    alpha[:,s] = (expElnA.T @ alpha[:,s-1])*explnPrH[:,s]
-                    alpha[:,s] = alpha[:,s]/np.sum(alpha[:,s])
-                    beta[:,len_seq-s-1] = expElnA@(beta[:,len_seq-s]*explnPrH[:,len_seq-s])
-                    beta[:,len_seq-s-1] = beta[:,len_seq-s]/np.sum(beta[:,len_seq-s])
+                alpha = np.zeros((self.num_state, len_seq))
+                beta = np.zeros((self.num_state, len_seq))
+                alpha[:, 0] = expElnPi * explnPrH[:, 0]
+                beta[:, len_seq - 1] = 1
+                for s in range(1, len_seq):
+                    alpha[:, s] = (expElnA.T @ alpha[:, s - 1]) * explnPrH[:, s]
+                    alpha[:, s] = alpha[:, s] / np.sum(alpha[:, s])
+                    beta[:, len_seq - s - 1] = expElnA @ (
+                        beta[:, len_seq - s] * explnPrH[:, len_seq - s]
+                    )
+                    beta[:, len_seq - s - 1] = beta[:, len_seq - s] / np.sum(
+                        beta[:, len_seq - s]
+                    )
 
-                gam = alpha*beta
-                gam = gam/gam.sum(0)
-                Ppi = self.tauPpi + gam[:,0]
-                A = 0*A + self.tauA
-                for s in range(1,len_seq):
-                    mat = expElnA*np.outer(alpha[:,s-1],beta[:,s]*explnPrH[:,s])
-                    mat = mat/mat.sum()
+                gam = alpha * beta
+                gam = gam / gam.sum(0)
+                Ppi = self.tauPpi + gam[:, 0]
+                A = 0 * A + self.tauA
+                for s in range(1, len_seq):
+                    mat = expElnA * np.outer(
+                        alpha[:, s - 1], beta[:, s] * explnPrH[:, s]
+                    )
+                    mat = mat / mat.sum()
                     A = A + mat
             gams.append(gam)
             As.append(A)
@@ -249,20 +268,20 @@ class BayesianHMM(SaveableModel):
         #  np.linalg.inv broadcasts over batch (1st) dimension
         for i in range(As.shape[0]):
             Ppi_len = len(Ppis[i])
-            Ppi = Ppis[i] - .01 / Ppi_len
+            Ppi = Ppis[i] - 0.01 / Ppi_len
 
-            A = As[i] - (0.1-eps)/ Ppi_len
+            A = As[i] - (0.1 - eps) / Ppi_len
             Pinorm = Ppi / Ppi.sum()
-            Anorm = A / A.sum(1)[:,np.newaxis]
+            Anorm = A / A.sum(1)[:, np.newaxis]
             Eye = np.eye(Ppi_len)
-            a = Eye - T/(T+1)*Anorm
-            b = Eye - matrix_power((T/(T+1)*Anorm), (T+1))
-            statvec = Pinorm.T @ inv(a)@b
-            statvec = statvec.T/statvec.sum()
-            #numpy gives inaccurate (at least different from Matalb, which I think is correct)
+            a = Eye - T / (T + 1) * Anorm
+            b = Eye - matrix_power((T / (T + 1) * Anorm), (T + 1))
+            statvec = Pinorm.T @ inv(a) @ b
+            statvec = statvec.T / statvec.sum()
+            # numpy gives inaccurate (at least different from Matalb, which I think is correct)
             # matrix power results for high powers and matrices larger than about 5x5 - must be a
             # numerical instability. Not sure this actually affects results
-            fingerprint = statvec[:,np.newaxis]*(Anorm**0.5)
+            fingerprint = statvec[:, np.newaxis] * (Anorm**0.5)
             fingerprints.append(fingerprint)
 
         return np.stack(fingerprints, axis=0)
@@ -294,7 +313,6 @@ class BayesianHMM(SaveableModel):
         fprints = self._getFingerprints(As, Ppis)
         return fprints, As, gams
 
-
     def fit_transform(self, V, verbose=0):
         """Fit HMM and return fingerprints in one step.
 
@@ -319,7 +337,7 @@ class BayesianHMM(SaveableModel):
         link = linkage(EB_dist, method="single")
         EBidx = leaves_list(link)
         self._resort_B(EBidx)
-        self.EB_dist = EB_dist # distance matrix
+        self.EB_dist = EB_dist  # distance matrix
 
     def _sort_EB_by_energy(self):
         EB_energy = self.EB.sum(axis=1)
@@ -328,16 +346,16 @@ class BayesianHMM(SaveableModel):
         self.EB_energy = EB_energy[EBidx]
 
     def _resort_B(self, EBidx):
-        #print(f"EB shape {self.EB.shape}")
-        #print(f"EB_index {EBidx}")
-        self.EB = self.EB[EBidx,:]
-        self.ElnB = self.ElnB[EBidx,:]
-        self.B1 = self.B1[EBidx,:]
-        self.B2 = self.B2[EBidx,:]
+        # print(f"EB shape {self.EB.shape}")
+        # print(f"EB_index {EBidx}")
+        self.EB = self.EB[EBidx, :]
+        self.ElnB = self.ElnB[EBidx, :]
+        self.B1 = self.B1[EBidx, :]
+        self.B2 = self.B2[EBidx, :]
 
     @classmethod
     def load(cls, filename):
-        """ Load a saved model.
+        """Load a saved model.
 
         Arguments
         ----------
@@ -349,11 +367,8 @@ class BayesianHMM(SaveableModel):
         BayesianHMM
             object with the parameters from filename.
         """
-        with h5py.File(filename, 'r') as hf:
+        with h5py.File(filename, "r") as hf:
             # init the class with the EW matrix stored in the parameter file
-            num_pat = hf['num_pat'][()]
-            gain = hf['gain'][()]
+            num_pat = hf["num_pat"][()]
+            gain = hf["gain"][()]
             return cls(num_pat, gain)._load(filename)
-
-
-
