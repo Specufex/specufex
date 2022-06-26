@@ -1,4 +1,5 @@
 [flake8]
 ignore = E203,E501,W503
-select = C,E,F,W
+select = BLK, C,E,F,W
 max-complexity = 10
+
