@@ -1,7 +1,6 @@
 from specufex import BayesianNonparametricNMF, BayesianHMM
 import numpy as np
 import os
-import pytest
 import h5py
 
 
@@ -80,16 +79,18 @@ class TestHMM:
         assert self.hmm.EB.shape == (self.hmm.num_state, self.hmm.num_pat)
 
     def test_fit_EB_dist_sort(self):
-        """test the HMM fit method"""
+        """Test that EB is sorted by pairwise distances.
+        Currently only checks that the shape is correct as above."""
         self.hmm.fit(self.V, resort_EB="distance")
 
         assert self.hmm.EB.shape == (self.hmm.num_state, self.hmm.num_pat)
 
     def test_fit_EB_energy_sort(self):
-        """test the HMM fit method"""
+        """Test that EB is sorted by decreasing energy, i.e., gradient is nonpositive"""
         self.hmm.fit(self.V, resort_EB="energy")
-
-        assert self.hmm.EB.shape == (self.hmm.num_state, self.hmm.num_pat)
+        energies = self.hmm.EB.sum(axis=1)
+        energies_diff = np.diff(energies)
+        assert np.all(energies_diff <= 0)
 
     def test_getStateMatrices(self):
         pass
