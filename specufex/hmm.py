@@ -341,7 +341,7 @@ class BayesianHMM(SaveableModel):
 
     def _sort_EB_by_energy(self):
         EB_energy = self.EB.sum(axis=1)
-        EBidx = np.argsort(EB_energy)
+        EBidx = np.argsort(EB_energy)[::-1]
         self._resort_B(EBidx)
         self.EB_energy = EB_energy[EBidx]
 
