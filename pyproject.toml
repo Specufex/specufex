@@ -1,0 +1,15 @@
+[tool.pytest.ini_options]
+minversion = "6.0"
+addopts = "-ra -q"
+testpaths = [
+    "tests",
+]
+
+[tool.coverage.paths]
+source = ["specufex", "*/site-packages"]
+[tool.coverage.run]
+branch = true
+source = ["specufex"]
+[tool.coverage.report]
+show_missing = true
+fail_under = 90
