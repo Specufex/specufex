@@ -5,4 +5,4 @@ numexpr
 flake8
 black
 isort
-nox
+pytest
