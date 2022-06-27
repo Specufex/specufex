@@ -7,9 +7,31 @@ testpaths = [
 
 [tool.coverage.paths]
 source = ["specufex", "*/site-packages"]
+
 [tool.coverage.run]
 branch = true
 source = ["specufex"]
+
 [tool.coverage.report]
 show_missing = true
 fail_under = 70
+
+[tool.flake8]
+avoid_escape = false
+docstring_convention = "all"
+docstring_style = "google"
+exclude = [
+    ".git",
+    "__pycache__",
+    ".nox",
+    "build",
+    "docs",
+]
+
+ignore = [
+    "E203",
+    "E501",
+    "W503",
+]
+max_line_length = 88
+suppress_none_returning = true

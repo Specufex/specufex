@@ -1,7 +1,9 @@
-from specufex import BayesianNonparametricNMF, BayesianHMM
-import numpy as np
 import os
+
 import h5py
+import numpy as np
+
+from specufex import BayesianHMM, BayesianNonparametricNMF
 
 
 class TestNMF:
