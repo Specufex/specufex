@@ -95,3 +95,7 @@ hmm = BayesianHMM.load(filename)
 ```
 
 and now you have NMF and HMM models that are ready to transform your data.
+
+### Development
+
+*In development!*
