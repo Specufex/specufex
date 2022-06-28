@@ -1,24 +1,24 @@
-from specufex import BayesianNonparametricNMF, BayesianHMM
-import numpy as np
 import os
-import pytest
+
 import h5py
+import numpy as np
+
+from specufex import BayesianHMM, BayesianNonparametricNMF
 
 
 class TestNMF:
-
     def setup(self):
 
         # for the NMF tests
-        N,D,M=10,5,7
-        self.X = np.random.poisson(lam=1.0, size=(N,D,M))
+        N, D, M = 10, 5, 7
+        self.X = np.random.poisson(lam=1.0, size=(N, D, M))
         self.nmf = BayesianNonparametricNMF(self.X.shape)
-        if os.path.exists("tested_save_nmf.h5"):
-            os.remove("tested_save_nmf.h5")
+        if os.path.exists("tests/tested_save_nmf.h5"):
+            os.remove("tests/tested_save_nmf.h5")
 
     def teardown(self):
-        if os.path.exists("tested_save_nmf.h5"):
-            os.remove("tested_save_nmf.h5")
+        if os.path.exists("tests/tested_save_nmf.h5"):
+            os.remove("tests/tested_save_nmf.h5")
 
     def test_fit(self):
         """Test the NMF fit method. Checks that the calculated EW and EA
@@ -43,37 +43,36 @@ class TestNMF:
     def test_save(self):
         """Test the NMF save method"""
         self.nmf.fit(self.X)
-        self.nmf.save('tested_save_nmf.h5', overwrite=False)
+        self.nmf.save("tests/tested_save_nmf.h5", overwrite=False)
 
-        assert os.path.exists('tested_save_nmf.h5')
+        assert os.path.exists("tests/tested_save_nmf.h5")
 
     def test_load(self):
         """Test model loading"""
-        nmf = BayesianNonparametricNMF.load('test_nmf_params.h5')
+        nmf = BayesianNonparametricNMF.load("tests/test_nmf_params.h5")
         assert isinstance(nmf, BayesianNonparametricNMF)
 
-        with h5py.File('test_nmf_params.h5') as hf:
-            assert (nmf.EW==hf['EW'][()]).all()
-            assert (nmf.EA==hf['EA'][()]).all()
+        with h5py.File("tests/test_nmf_params.h5") as hf:
+            assert (nmf.EW == hf["EW"][()]).all()
+            assert (nmf.EA == hf["EA"][()]).all()
             # might want to add tests for all the parameters - do the member thing
 
 
 class TestHMM:
-
     def setup(self):
         """set up"""
-        N,num_pat,timesteps=10,5,7
-        self.V = np.random.poisson(lam=1.0, size=(N,num_pat,timesteps))
+        N, num_pat, timesteps = 10, 5, 7
+        self.V = np.random.poisson(lam=1.0, size=(N, num_pat, timesteps))
         gain = np.ones(num_pat)
 
         self.hmm = BayesianHMM(num_pat, gain)
 
-        if os.path.exists("tested_save_hmm.h5"):
-            os.remove("tested_save_hmm.h5")
+        if os.path.exists("tests/tested_save_hmm.h5"):
+            os.remove("tests/tested_save_hmm.h5")
 
     def teardown(self):
-        if os.path.exists("tested_save_hmm.h5"):
-            os.remove("tested_save_hmm.h5")
+        if os.path.exists("tests/tested_save_hmm.h5"):
+            os.remove("tests/tested_save_hmm.h5")
 
     def test_fit_default(self):
         """test the HMM fit method"""
@@ -82,16 +81,18 @@ class TestHMM:
         assert self.hmm.EB.shape == (self.hmm.num_state, self.hmm.num_pat)
 
     def test_fit_EB_dist_sort(self):
-        """test the HMM fit method"""
+        """Test that EB is sorted by pairwise distances.
+        Currently only checks that the shape is correct as above."""
         self.hmm.fit(self.V, resort_EB="distance")
 
         assert self.hmm.EB.shape == (self.hmm.num_state, self.hmm.num_pat)
 
     def test_fit_EB_energy_sort(self):
-        """test the HMM fit method"""
+        """Test that EB is sorted by decreasing energy, i.e., gradient is nonpositive"""
         self.hmm.fit(self.V, resort_EB="energy")
-
-        assert self.hmm.EB.shape == (self.hmm.num_state, self.hmm.num_pat)
+        energies = self.hmm.EB.sum(axis=1)
+        energies_diff = np.diff(energies)
+        assert np.all(energies_diff <= 0)
 
     def test_getStateMatrices(self):
         pass
@@ -106,16 +107,16 @@ class TestHMM:
     def test_save(self):
         """test HMM model method"""
         self.hmm.fit(self.V)
-        self.hmm.save('tested_save_hmm.h5', overwrite=False)
+        self.hmm.save("tests/tested_save_hmm.h5", overwrite=False)
 
-        assert os.path.exists('tested_save_hmm.h5')
+        assert os.path.exists("tests/tested_save_hmm.h5")
 
     def test_load(self):
         """test HMM model loading"""
-        hmm = BayesianHMM.load('test_hmm_params.h5')
+        hmm = BayesianHMM.load("tests/test_hmm_params.h5")
         assert isinstance(hmm, BayesianHMM)
 
-        with h5py.File('test_hmm_params.h5') as hf:
-            assert (hmm.EB==hf['EB'][()]).all() 
-            #self.assertTrue( (hmm.EA==hf['EA'][()]).all() )
+        with h5py.File("tests/test_hmm_params.h5") as hf:
+            assert (hmm.EB == hf["EB"][()]).all()
+            # self.assertTrue( (hmm.EA==hf['EA'][()]).all() )
             # might want to add tests for all the parameters - do the member thing
