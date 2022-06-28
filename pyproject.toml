@@ -35,3 +35,6 @@ ignore = [
 ]
 max_line_length = 88
 suppress_none_returning = true
+
+[tool.isort]
+profile = "black"
