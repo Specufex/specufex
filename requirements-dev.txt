@@ -1,0 +1,7 @@
+flake8
+black
+isort
+pytest
+flake8-black
+flake8-isort
+flake8-pyprojecttoml
