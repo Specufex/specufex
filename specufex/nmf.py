@@ -76,7 +76,8 @@ class BayesianNonparametricNMF(SaveableModel):
         Returns
         ----------
         None
-            Saves the EW, EA, EWlnA, and gain arrays to the BayesianNonparametricNMF object.
+            Saves the EW, EA, EWlnA, and gain arrays to the
+            BayesianNonparametricNMF object.
         """
 
         for Xi in X:
@@ -101,7 +102,8 @@ class BayesianNonparametricNMF(SaveableModel):
             t1 = np.max(ElnWA_reshape, 0)
             ElnWA_reshape = ElnWA_reshape - t1
 
-            # update P  P(V1), V1(P)  ; T is the annealing variable-- it decreases to 1 with iterations.
+            # update P  P(V1), V1(P)  ; T is the annealing variable
+            # decreases to 1 with iterations.
             for t in range(int(10 + np.round(1 + 5 * (T - 1)) - 1)):
                 ElnV = psi(V1) - int(t > 0) * np.log(V2)
                 P = ElnWA_reshape / T + ElnV[..., np.newaxis] / T
@@ -124,7 +126,8 @@ class BayesianNonparametricNMF(SaveableModel):
             W2_up = ((V1 / V2) * (self.A1 / self.A2).T).sum(1)
             W2_up = self.w02 + (self.N_eff / n_tsteps) * W2_up.T
 
-            # W1_up and W2_up are improved Ws based on the subset of spectrograms used in that step... (SVI)
+            # W1_up and W2_up are improved Ws based on the
+            # subset of spectrograms used in that step... (SVI)
             W1 = (1 - rho) * self.W1 + rho * (
                 1 + (W1_up - 1) / T
             )  # weighted average of the new and the past
@@ -153,7 +156,8 @@ class BayesianNonparametricNMF(SaveableModel):
                 print(f"step {self.step+1}/{len(X)}, num patterns: {self.A1.shape[1]}")
             elif verbose > 1:
                 print(
-                    f"step {self.step+1}/{len(X)}, num patterns: {self.A1.shape[1]},  T: {T}, rho: {rho}"
+                    f"""step {self.step+1}/{len(X)}, num patterns:
+                     {self.A1.shape[1]},  T: {T}, rho: {rho}"""
                 )
         # Sort EW and EA by frequency for more interpretable result
         if resort_args:
@@ -273,7 +277,8 @@ class BayesianNonparametricNMF(SaveableModel):
         Returns
         ----------
         BayesianNonparametricNMF
-            BayesianNonparametricNMF object initialized with parameters and ready to transform data.
+            BayesianNonparametricNMF object initialized with
+            parameters and ready to transform data.
 
         """
         with h5py.File(filename, "r") as hf:

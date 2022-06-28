@@ -67,7 +67,8 @@ class BayesianHMM(SaveableModel):
             X, V:    the activation matrix, num_pat(dim) x timesteps
             len_seq: timesteps in H matrix (and spectrogram)
             B:       num_state x dim - Gamma distributed matrix
-            A:       num_state x num_state - Markov transition matrix, each row independently Dirichlet distributed
+            A:       num_state x num_state - Markov transition matrix,
+                     each row independently Dirichlet distributed
             lnPrH:   num_state x timesteps (len_seq)
             Ppi:     num_state - initial-state distribution
 
@@ -278,9 +279,11 @@ class BayesianHMM(SaveableModel):
             b = Eye - matrix_power((T / (T + 1) * Anorm), (T + 1))
             statvec = Pinorm.T @ inv(a) @ b
             statvec = statvec.T / statvec.sum()
-            # numpy gives inaccurate (at least different from Matalb, which I think is correct)
-            # matrix power results for high powers and matrices larger than about 5x5 - must be a
-            # numerical instability. Not sure this actually affects results
+            # numpy gives inaccurate (at least different from
+            # Matlab, which I think is correct)
+            # matrix power results for high powers and matrices larger than
+            # about 5x5 - must be a numerical instability.
+            # Not sure this actually affects results
             fingerprint = statvec[:, np.newaxis] * (Anorm**0.5)
             fingerprints.append(fingerprint)
 
