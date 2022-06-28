@@ -4,7 +4,7 @@ with open("README.md", "r") as fh:
     long_description = fh.read()
 
 setuptools.setup(
-    name="SpecUFEx", # Replace with your own username
+    name="SpecUFEx",  # Replace with your own username
     version="0.1.0",
     author="Nate Groebner",
     author_email="groe0029@umn.edu",
@@ -18,5 +18,5 @@ setuptools.setup(
         "License :: OSI Approved :: MIT License",
         "Operating System :: OS Independent",
     ],
-    python_requires='>=3.6',
+    python_requires=">=3.6",
 )

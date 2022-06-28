@@ -4,4 +4,9 @@ __pycache__
 *.pyc
 *.npy
 *.ipynb
-SpecUFEx.egg-info/*
+SpecUFEx.egg-info/
+tests/.coverage
+.coverage
+.nox
+build/
+.pytest_cache/
