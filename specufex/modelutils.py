@@ -49,14 +49,14 @@ class SaveableModel:
                 f"""{filename} already exists. If you wish to overwrite this file,
             pass overwrite=True to the this function."""
             )
-            return
+            return False  # for tests
 
         else:
             with h5py.File(filename, "w") as f:
                 for member in members:
                     f.create_dataset(member, data=self.__getattribute__(member))
-
             print(f"Model saved to {filename}")
+            return True
 
     def _load(self, filename):
         """Helper function for loading a saved model.
