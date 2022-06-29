@@ -1,0 +1,9 @@
+flake8
+black
+isort
+pytest
+coverage[toml]
+pytest-cov
+flake8-black
+flake8-isort
+flake8-pyprojecttoml

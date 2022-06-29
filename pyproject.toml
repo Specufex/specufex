@@ -6,7 +6,7 @@ testpaths = [
 ]
 
 [tool.coverage.paths]
-source = ["specufex", "*/site-packages"]
+source = ["specufex"]
 
 [tool.coverage.run]
 branch = true
@@ -14,7 +14,7 @@ source = ["specufex"]
 
 [tool.coverage.report]
 show_missing = true
-fail_under = 70
+fail_under = 80
 
 [tool.flake8]
 avoid_escape = false
