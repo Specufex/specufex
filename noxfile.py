@@ -9,7 +9,7 @@ nox.options.sessions = "lint", "tests"
 def tests(session):
     session.run("mamba", "install", "-y", "--file", "requirements.txt")
     session.run("pip", "install", "-r", "requirements-dev.txt")
-    session.install(".", "--no-deps")
+    session.install("-e", ".", "--no-deps")
     session.run("pytest", "--cov")
 
 
