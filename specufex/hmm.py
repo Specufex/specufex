@@ -57,7 +57,7 @@ class BayesianHMM(SaveableModel):
 
         self.step = 0
 
-    def fit(self, V, resort_EB="energy"):
+    def fit(self, V, verbose=0, resort_EB="energy"):
         """Fit the hidden Markov model.
 
         Internal variables for reference. ::
@@ -159,9 +159,8 @@ class BayesianHMM(SaveableModel):
             self.EB = self.B1 / self.B2
             self.ElnB = psi(self.B1) - np.log(self.B2)
 
-            """if verbose > 0:
-                print('step {}/{}'.format(step, len(V)))
-            """
+            if verbose > 0:
+                print("step {}/{}".format(step, len(V)))
 
         # sort the EB matrix by pattern similarity
         # uses hierarchical clustering with single linkage
@@ -183,7 +182,7 @@ class BayesianHMM(SaveableModel):
         Returns
         ----------
         numpy array
-            The state matrices or each spectrogram in X.
+            The state matrices for each spectrogram in X.
         """
 
         As = []
