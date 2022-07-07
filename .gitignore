@@ -3,7 +3,6 @@
 __pycache__
 *.pyc
 *.npy
-*.ipynb
 SpecUFEx.egg-info/
 tests/.coverage
 .coverage
