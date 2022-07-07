@@ -8,10 +8,12 @@ from scipy.stats import gamma
 
 from .modelutils import SaveableModel
 
+
 def matrix_power2(A, n):
     w, v = np.linalg.eig(A)
     sn = np.diag(w**n)
-    return v@sn@np.linalg.inv(v)
+    return v @ sn @ np.linalg.inv(v)
+
 
 class BayesianHMM(SaveableModel):
 
