@@ -10,3 +10,5 @@ tests/.coverage
 .nox
 build/
 .pytest_cache/
+nmf.h5
+
