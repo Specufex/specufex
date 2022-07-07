@@ -36,51 +36,55 @@ SpecUFEx fits a group of $D x M$ spectrograms, where D is the number of rows (fr
 
 The two main classes in this package are `BayesianNonparametricNMF` and `BayesianHMM`. Each has fit, transform, and fit_transform methods to be consistent with the Scikit-learn API style.
 
-The first step is to preprocess your data. For this example, we use the function used in Holtzman et. al, which is included in `utilities.py` of the package. X is our dataset.
+The first step is to calculate the nonnegative matrix factorization of your data. This is done by creating a new `BayesianNonParametricNMF` object and calling its `fit` method. This function estimates the model parameters based on all of the data in X.  In the future, we hope to create a convergence criterion based on the ELBO. We iteratively fit the model, one spectrogram at a time, selecting a random spectrogram from our data set. In the example below, `X` is the numpy matrix of spectrograms. Please note that your data must be nonnegative; i.e., all elements must be >= 0.
 
-```shell
-from SpecUFEx import BayesianNonparametricNMF, BayesianHMM, normalize_spectrogram
-
-Xis = []
-for Xi in X:
-    Xi = normalize_spectrogram(Xi)
-    Xis.append(Xi)
-X = np.stack(Xis, 0)
-```
-
-Next, find the nonnegative matrix factorization of the normalized data. This is simply done by creating a new `BayesianNonParametricNMF` object and calling its `fit` method. This function estimates the model parameters based on all of the data in X. Batch learning can be done by splitting your data matrix into minibatches. In the future, we hope to create a convergence criterion based on the ELBO.
-
-```shell
+```python
 nmf = BayesianNonparametricNMF(X.shape)
-nmf.fit(X)
+
+batches = 10000
+batch_size = 1
+
+for i in range(batches):
+    idx = np.random.randint(X.shape[0], size-batch_size)
+    nmf.fit(X[idx])
 ```
 
 This finds the left matrix of the NMF of the data. Transform the data to the reduced representation, Hs, (the right matrix) via
 
-`Vs, Xpwrs = nmf.transform(X)`
+```python
+Vs = nmf.transform(X)
+```
 
 Pro tip: a step can be saved by the convenience method `fit_transform, which does the fitting and transformation in one command.  Note, however, that this can take a long time, so you may want to do this in pieces so you can save the resulting NMF left matrix in case something goes wrong (like a power outage).
 
 Next, fit the HMM model with the BayesianHMM class. Currently, in order to setup the object correctly the number of NMF patterns (`num_pat`) and the gain calculated by `BayesianNonparametricNMF` are passed to the constructor.
 
-```shell
+```python
 hmm = BayesianHMM(nmf.num_pat, nmf.gain)
-hmm.fit(Vs)
+
+batches = 10000
+batch_size = 1
+
+for i in range(batches):
+    idx = np.random.randint(Vs.shape[0], size-batch_size)
+    hmm.fit(Vs[idx])
 ```
 
 Similar to the NMF calculation, the data are transformed to fingerprints with the `transform` function.
 
-`fingerprints, As, Ppis = hmm.transform(Vs)`
+```python
+fingerprints, As, gams = hmm.transform(Vs)
+```
 
 Or, if you want to save a step, use `fit_transform` like above.
 
-`fingerprints, As, Ppis = hmm.fit_transform(Vs, nmf.EW)`
+```python
+fingerprints, As, gams = hmm.fit_transform(Vs, nmf.EW)
+```
 
-The variable `fingerprints` has the calculated fingerprints (the ultimate matrices of interest), `As` has the state transition matrices of each spectrogram, and `Ppis` has the initial state vectors.
+The variable `fingerprints` has the calculated fingerprints (the ultimate matrices of interest), `As` has the state transition matrices of each spectrogram, and `gams` are the state sequence probability matrices.
 
 ### Saving and loading models
-
-*Please note: The following is a work in progress. If the following code isn't working for you, the trained model classes can be pickled and saved to disk.*
 
 Once you have fit either the NMF or HMM model (or both!) you can save the parameters for the model using built in functions. From the above examples where `nmf` and `hmm` are objects that contain trained models, simply use
 
@@ -100,4 +104,5 @@ and now you have NMF and HMM models that are ready to transform your data.
 
 ### Development
 
-*In development!*
+If you are interested in contributing to SpecUFEx development, please fork this repository and create a new branch for your new code. Please write tests for the code you develop. We use [pytest](https://docs.pytest.org/en/7.1.x/) and [nox](https://nox.thea.codes/en/stable/) for writing and running tests. Code formtting is done with [black](https://black.readthedocs.io/en/stable/usage_and_configuration/the_basics.html), [flake8](https://flake8.pycqa.org/en/latest/), and [isort](https://pycqa.github.io/isort/). We have a github CI pipeline that automatically builds and tests any new merges, and it will fail if your code is not formatted! These are very easy to use, and can be installed into your development environment using pip and the `requirements-dev.txt` file. When your code is done, submit a pull request.
+
