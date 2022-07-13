@@ -143,7 +143,7 @@ class BayesianNonparametricNMF(SaveableModel):
             A2 = (1 - rho) * self.A2 + rho * A2_up / T
 
             # throw away useless patterns
-            idx_prune = ((A1 / A2) > 0.01)[0]
+            idx_prune = ((A1 / A2) > 0.001)[0]
             self.W1 = W1[:, idx_prune]
             self.W2 = W2[:, idx_prune]
             self.A1 = A1[:, idx_prune]
