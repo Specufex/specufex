@@ -20,4 +20,4 @@ probabilities for the hidden state sequence of each reduced spectrogram
 are calculated. These transition probabilities then constitute the
 features of each spectrogram. The fingerprints can then be used as input to a variety of unsupervised and supervised machine learning methods.
 
-.. [Hoff2013] Ref to Hoffman, Blei, Wang, Paisley 2013
+.. [Hoff2013] Matthew D. Hoffman, David M. Blei, Chong Wang, John W. Paisley: Stochastic variational inference. J. Mach. Learn. Res. 14(1): 1303-1347 (2013)

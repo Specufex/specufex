@@ -19,9 +19,9 @@ Welcome to SpecUFEx!
 SpecuFEx is a method for reducing seismic waveforms to features suitable for machine learning.
 
 The SpecuFEx algorithm was designed by John Paisley at Columbia University.
-If you use SpecUFEx in published research or code, please reference::
+If you use SpecUFEx in published research or code, please reference
 
- [Holtzman, B.K., Paté, A., Paisley, J., Waldhauser, F., Repetto, D.: Machine learning reveals cyclic changes in seismic source spectra in geysers geothermal field. Science advances 4(5) (2018)](https://advances.sciencemag.org/content/4/5/eaao2929)
+`Holtzman, B.K., Paté, A., Paisley, J., Waldhauser, F., Repetto, D.: Machine learning reveals cyclic changes in seismic source spectra in geysers geothermal field. Science advances 4(5) (2018) <https://advances.sciencemag.org/content/4/5/eaao2929>`_.
 
 
 Indices and tables
