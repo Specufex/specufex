@@ -17,7 +17,7 @@ This repository is a python port of Matlab code originally written by John Paisl
 Clone this repository to your computer, cd to the directory, and use `pip` to install.
 
 ``` shell
-git clone https://github.com/nategroebner/specufex.git
+git clone https://github.com/specufex/specufex.git
 cd specufex
 pip install .
 ```
