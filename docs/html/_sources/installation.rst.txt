@@ -21,6 +21,6 @@ Install using pip
 Once you have activated your environment, clone this repository
 to your computer, cd to the directory, and use `pip` to install the package.::
 
-    git clone https://github.com/nategroebner/specufex.git
+    git clone https://github.com/specufex/specufex.git
     cd specufex
     pip install -e .
