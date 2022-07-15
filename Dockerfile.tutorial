@@ -1,0 +1,20 @@
+
+FROM ghcr.io/seisscoped/container-base
+
+LABEL maintainer="Nate Groebner"
+
+RUN cd /home/scoped \
+    && git clone https://github.com/specufex/specufex
+
+RUN cd /home/scoped/specufex \
+    && mamba install --file requirements.txt \
+    && mamba install scikit-learn seaborn tqdm \
+    && docker-clean \
+    && mv ./tutorials "${HOME}" \
+    && cd .. \
+    && rm -r specufex
+
+USER ${NB_UID}
+WORKDIR "${HOME}"
+
+EXPOSE 8888
