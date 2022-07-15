@@ -4,7 +4,7 @@ FROM ghcr.io/seisscoped/container-base
 LABEL maintainer="Nate Groebner"
 
 RUN cd /home/scoped \
-    && git clone --branch feature-geysers-tutorial https://github.com/ngroebner/specufex
+    && git clone https://github.com/specufex/specufex
 
 RUN cd /home/scoped/specufex \
     && mamba install --file requirements.txt \
