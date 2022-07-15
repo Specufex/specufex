@@ -3,14 +3,13 @@ FROM ghcr.io/seisscoped/container-base
 
 LABEL maintainer="Nate Groebner"
 
-RUN cd /home/scoped \
-    && git clone --branch feature-geysers-tutorial https://github.com/ngroebner/specufex
+COPY requirements.txt .
 
-RUN cd /home/scoped/specufex \
-    && conda install --file requirements.txt \
-    && pip install -e . \
-    && docker-clean \
-    && mv ./tutorials "${HOME}"
+RUN pip install git+https://github.com/specufex/specufex.git \
+    && pip install -r requirements.txt \
+    && mamba install scikit-learn \
+    && rm requirements.txt \
+    && docker-clean
 
 USER ${NB_UID}
 WORKDIR "${HOME}"
