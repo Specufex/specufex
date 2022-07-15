@@ -9,6 +9,7 @@ Welcome to SpecUFEx!
 .. toctree::
    :caption: Contents
    :maxdepth: 1
+   :name: genindex
 
    specufex
    installation
@@ -29,4 +30,3 @@ Indices and tables
 
 * :ref:`genindex`
 * :ref:`modindex`
-* :ref:`search`
