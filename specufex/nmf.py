@@ -80,6 +80,11 @@ class BayesianNonparametricNMF(SaveableModel):
             BayesianNonparametricNMF object.
         """
 
+        if np.any(X < 0):
+            raise ValueError(
+                "All values of the spectrograms to be fit must be nonnegative!"
+            )
+
         for Xi in X:
             # annealing temp -  track total steps so annealing is correct
             T = 1 + 0.75 ** (self.step - 1)
