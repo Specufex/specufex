@@ -7,17 +7,19 @@ Usage
 Fitting models and transforming data
 -------------------------------------
 
-SpecUFEx fits a group of N $D x M$ spectrograms, D is the number of rows (frequency bands) and M is columns (timesteps). The spectrograms must be in a numpy-compatible matrix of dimension $N x D x M$, N being the number of spectrograms in the dataset. The matrix must consist of all nonnegative (>=0) entries. (Note, this is not yet checked for.)
+SpecUFEx fits a group of :math:`D x M` spectrograms, :math:`D`` is the number of rows (frequency bands) and :math:`M` is the number of columns (timesteps). The spectrograms must be in a numpy-compatible array of dimension :math:`N x D x M`, :math:`N`` being the number of spectrograms in the dataset. The array must consist of all nonnegative (>=0) entries. (Note, this is not yet checked for.)
 
 The two main classes in this package are `BayesianNonparametricNMF` and `BayesianHMM`. Each has fit, transform, and fit_transform methods to be consistent with the Scikit-learn API style.
 
-The first step is to preprocess your data. For this example, we use the function used in Holtzman et. al, which is included in `utilities.py` of the package. X is our dataset.::
+The first step is to preprocess your data. For this example, we use the function used in Holtzman et. al, which transforms each spectrogram to dB, divides by the median, and sets all resulting negative values to zero. X is our dataset.::
 
     from SpecUFEx import BayesianNonparametricNMF, BayesianHMM, normalize_spectrogram
 
     Xis = []
     for Xi in X:
-        Xi = normalize_spectrogram(Xi)
+        Xi = Xi/np.median(Xi)
+        Xi = 20*np.log10(Xi, where=Xi != 0)
+        Xi = np.maximum(0, Xi)
         Xis.append(Xi)
     X = np.stack(Xis, 0)
 
