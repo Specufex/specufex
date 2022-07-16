@@ -98,6 +98,7 @@
 </ul>
 </li>
 <li class="toctree-l1"><a class="reference internal" href="examples.html">Examples</a></li>
+<li class="toctree-l1"><a class="reference internal" href="api.html">API</a></li>
 </ul>
 
             
@@ -195,14 +196,16 @@
 <h1>Usage<a class="headerlink" href="#usage" title="Permalink to this headline">¶</a></h1>
 <div class="section" id="fitting-models-and-transforming-data">
 <h2>Fitting models and transforming data<a class="headerlink" href="#fitting-models-and-transforming-data" title="Permalink to this headline">¶</a></h2>
-<p>SpecUFEx fits a group of N $D x M$ spectrograms, D is the number of rows (frequency bands) and M is columns (timesteps). The spectrograms must be in a numpy-compatible matrix of dimension $N x D x M$, N being the number of spectrograms in the dataset. The matrix must consist of all nonnegative (&gt;=0) entries. (Note, this is not yet checked for.)</p>
+<p>SpecUFEx fits a group of <span class="math notranslate nohighlight">\(D x M\)</span> spectrograms, <span class="math notranslate nohighlight">\(D\)</span> is the number of rows (frequency bands) and <span class="math notranslate nohighlight">\(M\)</span> is the number of columns (timesteps). The spectrograms must be in a numpy-compatible array of dimension <span class="math notranslate nohighlight">\(N x D x M\)</span>, <span class="math notranslate nohighlight">\(N\)</span> being the number of spectrograms in the dataset. The array must consist of all nonnegative (&gt;=0) entries. (Note, this is not yet checked for.)</p>
 <p>The two main classes in this package are <cite>BayesianNonparametricNMF</cite> and <cite>BayesianHMM</cite>. Each has fit, transform, and fit_transform methods to be consistent with the Scikit-learn API style.</p>
-<p>The first step is to preprocess your data. For this example, we use the function used in Holtzman et. al, which is included in <cite>utilities.py</cite> of the package. X is our dataset.:</p>
+<p>The first step is to preprocess your data. For this example, we use the function used in Holtzman et. al, which transforms each spectrogram to dB, divides by the median, and sets all resulting negative values to zero. X is our dataset.:</p>
 <div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">SpecUFEx</span> <span class="kn">import</span> <span class="n">BayesianNonparametricNMF</span><span class="p">,</span> <span class="n">BayesianHMM</span><span class="p">,</span> <span class="n">normalize_spectrogram</span>
 
 <span class="n">Xis</span> <span class="o">=</span> <span class="p">[]</span>
 <span class="k">for</span> <span class="n">Xi</span> <span class="ow">in</span> <span class="n">X</span><span class="p">:</span>
-    <span class="n">Xi</span> <span class="o">=</span> <span class="n">normalize_spectrogram</span><span class="p">(</span><span class="n">Xi</span><span class="p">)</span>
+    <span class="n">Xi</span> <span class="o">=</span> <span class="n">Xi</span><span class="o">/</span><span class="n">np</span><span class="o">.</span><span class="n">median</span><span class="p">(</span><span class="n">Xi</span><span class="p">)</span>
+    <span class="n">Xi</span> <span class="o">=</span> <span class="mi">20</span><span class="o">*</span><span class="n">np</span><span class="o">.</span><span class="n">log10</span><span class="p">(</span><span class="n">Xi</span><span class="p">,</span> <span class="n">where</span><span class="o">=</span><span class="n">Xi</span> <span class="o">!=</span> <span class="mi">0</span><span class="p">)</span>
+    <span class="n">Xi</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">maximum</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="n">Xi</span><span class="p">)</span>
     <span class="n">Xis</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">Xi</span><span class="p">)</span>
 <span class="n">X</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">stack</span><span class="p">(</span><span class="n">Xis</span><span class="p">,</span> <span class="mi">0</span><span class="p">)</span>
 </pre></div>
