@@ -30,13 +30,14 @@ based on all of the data in X. Batch learning can be done by splitting
 your data matrix into minibatches. In the future, we hope to create a
 convergence criterion based on the ELBO.::
 
-    nmf = BayesianNonparametricNMF()
+    nmf = BayesianNonparametricNMF(X.shape) # must pass the dimensions of the
+                                            # dataset to the constructor
     nmf.fit(X)
 
 This finds the left matrix of the NMF of the data. Transform the data
 to the reduced representation, Hs, (the right matrix) via::
 
-    Vs, Xpwrs = nmf.transform(X)
+    Vs = nmf.transform(X)
 
 Pro tip: a step can be saved by the convenience method `fit_transform`,
 which does the fitting and transformation in one command.  Note, however,
@@ -49,20 +50,21 @@ setup the object correctly the number of NMF patterns (`num_pat`) and
 the gain calculated by `BayesianNonparametricNMF` are passed to the constructor.::
 
     hmm = BayesianHMM(nmf.num_pat, nmf.gain)
-    hmm.fit(Vs)
+    for V in Vs:
+        hmm.fit(V)
 
 Similar to the NMF calculation, the data is transformed to fingerprints
 with the `transform` function.::
 
-    fingerprints, As, Ppis = hmm.transform(Vs)
+    fingerprints, As, gams = hmm.transform(Vs)
 
 Or, if you want to save a step, use `fit_transform` like above.:
 
-    fingerprints, As, Ppis = hmm.fit_transform(Vs)
+    fingerprints, As, gams = hmm.fit_transform(Vs)
 
 The variable `fingerprints` has the calculated fingerprints (the ultimate
 matrices of interest), `As` has the state transition matrices of each
-spectrogram, and `Ppis` has the initial state vectors.
+spectrogram, and `gams` has the state sequence matrix.
 
 Saving and loading models
 -------------------------
