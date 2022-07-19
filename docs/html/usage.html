@@ -216,13 +216,14 @@ calling its <cite>fit</cite> method. This function estimates the model parameter
 based on all of the data in X. Batch learning can be done by splitting
 your data matrix into minibatches. In the future, we hope to create a
 convergence criterion based on the ELBO.:</p>
-<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">nmf</span> <span class="o">=</span> <span class="n">BayesianNonparametricNMF</span><span class="p">()</span>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">nmf</span> <span class="o">=</span> <span class="n">BayesianNonparametricNMF</span><span class="p">(</span><span class="n">X</span><span class="o">.</span><span class="n">shape</span><span class="p">)</span> <span class="c1"># must pass the dimensions of the</span>
+                                        <span class="c1"># dataset to the constructor</span>
 <span class="n">nmf</span><span class="o">.</span><span class="n">fit</span><span class="p">(</span><span class="n">X</span><span class="p">)</span>
 </pre></div>
 </div>
 <p>This finds the left matrix of the NMF of the data. Transform the data
 to the reduced representation, Hs, (the right matrix) via:</p>
-<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">Vs</span><span class="p">,</span> <span class="n">Xpwrs</span> <span class="o">=</span> <span class="n">nmf</span><span class="o">.</span><span class="n">transform</span><span class="p">(</span><span class="n">X</span><span class="p">)</span>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">Vs</span> <span class="o">=</span> <span class="n">nmf</span><span class="o">.</span><span class="n">transform</span><span class="p">(</span><span class="n">X</span><span class="p">)</span>
 </pre></div>
 </div>
 <p>Pro tip: a step can be saved by the convenience method <cite>fit_transform</cite>,
@@ -234,21 +235,22 @@ like a power outage).</p>
 setup the object correctly the number of NMF patterns (<cite>num_pat</cite>) and
 the gain calculated by <cite>BayesianNonparametricNMF</cite> are passed to the constructor.:</p>
 <div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">hmm</span> <span class="o">=</span> <span class="n">BayesianHMM</span><span class="p">(</span><span class="n">nmf</span><span class="o">.</span><span class="n">num_pat</span><span class="p">,</span> <span class="n">nmf</span><span class="o">.</span><span class="n">gain</span><span class="p">)</span>
-<span class="n">hmm</span><span class="o">.</span><span class="n">fit</span><span class="p">(</span><span class="n">Vs</span><span class="p">)</span>
+<span class="k">for</span> <span class="n">V</span> <span class="ow">in</span> <span class="n">Vs</span><span class="p">:</span>
+    <span class="n">hmm</span><span class="o">.</span><span class="n">fit</span><span class="p">(</span><span class="n">V</span><span class="p">)</span>
 </pre></div>
 </div>
 <p>Similar to the NMF calculation, the data is transformed to fingerprints
 with the <cite>transform</cite> function.:</p>
-<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">fingerprints</span><span class="p">,</span> <span class="n">As</span><span class="p">,</span> <span class="n">Ppis</span> <span class="o">=</span> <span class="n">hmm</span><span class="o">.</span><span class="n">transform</span><span class="p">(</span><span class="n">Vs</span><span class="p">)</span>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">fingerprints</span><span class="p">,</span> <span class="n">As</span><span class="p">,</span> <span class="n">gams</span> <span class="o">=</span> <span class="n">hmm</span><span class="o">.</span><span class="n">transform</span><span class="p">(</span><span class="n">Vs</span><span class="p">)</span>
 </pre></div>
 </div>
 <p>Or, if you want to save a step, use <cite>fit_transform</cite> like above.:</p>
 <blockquote>
-<div><p>fingerprints, As, Ppis = hmm.fit_transform(Vs)</p>
+<div><p>fingerprints, As, gams = hmm.fit_transform(Vs)</p>
 </div></blockquote>
 <p>The variable <cite>fingerprints</cite> has the calculated fingerprints (the ultimate
 matrices of interest), <cite>As</cite> has the state transition matrices of each
-spectrogram, and <cite>Ppis</cite> has the initial state vectors.</p>
+spectrogram, and <cite>gams</cite> has the state sequence matrix.</p>
 </div>
 <div class="section" id="saving-and-loading-models">
 <h2>Saving and loading models<a class="headerlink" href="#saving-and-loading-models" title="Permalink to this headline">¶</a></h2>
