@@ -3,12 +3,8 @@
 __pycache__
 *.pyc
 *.npy
-SpecUFEx.egg-info/
-tests/.coverage
-.coverage
-.nox
-build/
-.pytest_cache/
-nmf.h5
-tutorials/data/geysers/Vs.h5
-
+*.ipynb
+SpecUFEx.egg-info/*
+.nox/*
+.pytest_cache
+build
