@@ -17,4 +17,7 @@ RUN cd /home/scoped/specufex \
 USER ${NB_UID}
 WORKDIR "${HOME}"
 
+# copy jupyter config file to HOME/.jupyter
+COPY .secrets/jupyter_server_config.json ~/.jupyter/
+
 EXPOSE 8888

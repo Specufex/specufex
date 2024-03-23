@@ -1,0 +1,21 @@
+
+FROM container-base:local
+
+LABEL maintainer="Nate Groebner"
+
+RUN git clone https://github.com/specufex/specufex.git \
+    && cd "${HOME}"/specufex \
+    && pip install . \
+    && pip install scikit-learn seaborn tqdm h5py numexpr \
+#    && rm requirements.txt \
+    && docker-clean
+
+USER ${NB_UID}
+WORKDIR "${HOME}"
+
+# for password setup - only for 2024 Seattle SSA
+COPY .secrets/jupyter_server_config.json .jupyter/
+
+WORKDIR "${HOME}/specufex/tutorials"
+
+EXPOSE 8888
