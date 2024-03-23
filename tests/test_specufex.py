@@ -1,5 +1,4 @@
 import os
-from pathlib import Path
 
 import numpy as np
 import pytest
@@ -17,6 +16,7 @@ def setup_nmf():
         os.remove("tests/tested_save_nmf.h5")
     return [X, nmf]
 
+
 def test_nmf_fit(setup_nmf):
     """Test the NMF fit method. Checks that the calculated EW and EA
     matrices when multiplied have same first dimension as X.
@@ -26,6 +26,7 @@ def test_nmf_fit(setup_nmf):
     nmf.fit(X)
     fit_shape = nmf.EW @ np.diag(nmf.EA[0])
     assert X.shape[1] == fit_shape.shape[0]
+
 
 def test_fit_no_resort_args(setup_nmf):
     """Test the NMF fit method without resorting the As. Checks that
@@ -38,6 +39,7 @@ def test_fit_no_resort_args(setup_nmf):
     fit_shape = nmf.EW @ np.diag(nmf.EA[0])
     assert X.shape[1] == fit_shape.shape[0]
 
+
 def test_fit_stepsize(setup_nmf):
     """Test the NMF fit method when stepsize is specified.
     Checks that the calculated EW and EA matrices when multiplied
@@ -49,6 +51,7 @@ def test_fit_stepsize(setup_nmf):
 
     assert X.shape[1] == fit_shape.shape[0]
 
+
 def test_transform(setup_nmf):
     """Test the NMF transform method. Checks that when a transformed
     V matrix is multiplied by EWA it has same dimension as
@@ -59,6 +62,7 @@ def test_transform(setup_nmf):
     Vs = nmf.transform(X)
     est_X = nmf.EW @ np.diag(nmf.EA[0]) @ Vs[0]
     assert X[0].shape == est_X.shape
+
 
 def test_fit_transform(setup_nmf):
     """Test the NMF transform method. Checks that when a transformed
@@ -76,6 +80,7 @@ def test_fit_transform(setup_nmf):
     est_X = nmf.EW @ np.diag(nmf.EA[0]) @ Vs[0]
     assert X[0].shape == est_X.shape
 
+
 @pytest.fixture
 def setup_hmm():
     """set up"""
@@ -90,6 +95,7 @@ def setup_hmm():
 
     return [V, hmm]
 
+
 def test_hmm_fit_default(setup_hmm):
     """test the HMM fit method"""
 
@@ -102,6 +108,7 @@ def test_hmm_fit_default(setup_hmm):
     hmm.fit(V, verbose=23)
     assert hmm.EB.shape == (hmm.num_state, hmm.num_pat)
 
+
 def test_fit_EB_dist_sort(setup_hmm):
     """Test that EB is sorted by pairwise distances.
     Currently only checks that the shape is correct as above.
@@ -111,6 +118,7 @@ def test_fit_EB_dist_sort(setup_hmm):
 
     assert hmm.EB.shape == (hmm.num_state, hmm.num_pat)
 
+
 def test_fit_EB_energy_sort(setup_hmm):
     """Test that EB is sorted by decreasing energy, i.e., gradient is nonpositive"""
     V, hmm = setup_hmm
@@ -118,6 +126,7 @@ def test_fit_EB_energy_sort(setup_hmm):
     energies = hmm.EB.sum(axis=1)
     energies_diff = np.diff(energies)
     assert np.all(energies_diff <= 0)
+
 
 def test_getStateMatrices(setup_hmm):
     """Test the _getStateMatrices method. Only checks to see
@@ -130,6 +139,7 @@ def test_getStateMatrices(setup_hmm):
     assert ppis.shape == (V.shape[0], hmm.num_state)
     assert gams.shape == (V.shape[0], hmm.num_state, V.shape[2])
 
+
 def test_getFingerprints(setup_hmm):
     """Test the _getFingerprints method"""
     V, hmm = setup_hmm
@@ -141,6 +151,7 @@ def test_getFingerprints(setup_hmm):
         hmm.num_state,
         hmm.num_state,
     )
+
 
 def test_hmm_transform(setup_hmm):
     """test the HMM transform method"""
@@ -155,6 +166,7 @@ def test_hmm_transform(setup_hmm):
     assert As.shape == (V.shape[0], hmm.num_state, hmm.num_state)
     assert gams.shape == (V.shape[0], hmm.num_state, V.shape[2])
 
+
 def test_hmm_fit_transform(setup_hmm):
     """Test fit_transform method"""
     V, hmm = setup_hmm
@@ -166,4 +178,3 @@ def test_hmm_fit_transform(setup_hmm):
     )
     assert As.shape == (V.shape[0], hmm.num_state, hmm.num_state)
     assert gams.shape == (V.shape[0], hmm.num_state, V.shape[2])
-
