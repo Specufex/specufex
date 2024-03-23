@@ -10,3 +10,4 @@ SpecUFEx.egg-info/*
 build
 .secrets
 Dockerfile.tutorial_local
+waveforms.pkl
