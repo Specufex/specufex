@@ -15,10 +15,15 @@ description="Python implementation of SpecUFEx"
 readme = "README.md"
 license = {file = "LICENSE"}
 dependencies = [
+    "h5py",
     "numpy>=1.20.0",
     "scipy>=1.2.1",
     "h5py>=2.10.0",
-    "numexpr"
+    "numexpr",
+    "h5py",
+    "tqdm",
+    "scikit-learn",
+    "seaborn"
 ]
 
 [project.optional-dependencies]
