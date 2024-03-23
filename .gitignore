@@ -9,3 +9,4 @@ SpecUFEx.egg-info/*
 .pytest_cache
 build
 .secrets
+Dockerfile.tutorial_local

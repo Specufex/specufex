@@ -6,12 +6,38 @@ build-backend = "flit_core.buildapi"
 
 [project]
 name = "specufex"
+version="0.1.1"
+authors = [
+    {name = "Nate Groebner", email = "ngroe0029@gmail.com"},
+    {name = "Theresa Sawi", email = "tsawi@ldeo.columbia.edu"},
+]
+description="Python implementation of SpecUFEx"
+readme = "README.md"
+license = {file = "LICENSE"}
 dependencies = [
     "numpy>=1.20.0",
     "scipy>=1.2.1",
     "h5py>=2.10.0",
     "numexpr"
 ]
+
+[project.optional-dependencies]
+dev = [
+    "black",
+    "isort",
+    "coverage[toml]",
+    "flake8",
+    "pytest-cov",
+    "flake8-black",
+    "flake8-isort",
+    "flake8-pyprojecttoml",
+    #"ruff"
+]
+
+[project.urls]
+Documentation = "https://specufex.github.io/specufex/html/index.html"
+Repository = "https://github.com/Specufex/specufex.git"
+Issues = "https://github.com/Specufex/specufex/issues"
 
 [tool.pytest.ini_options]
 minversion = "6.0"
