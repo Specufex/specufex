@@ -8,5 +8,3 @@ SpecUFEx.egg-info/*
 .nox/*
 .pytest_cache
 build
-.secrets
-Dockerfile.tutorial_local
