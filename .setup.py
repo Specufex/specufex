@@ -5,13 +5,13 @@ with open("README.md", "r") as fh:
 
 setuptools.setup(
     name="SpecUFEx",  # Replace with your own username
-    version="0.1.0",
+    version="0.1.1",
     author="Nate Groebner",
-    author_email="groe0029@umn.edu",
+    author_email="ngroe0029@gmail.com",
     description="Python implementation of SpecUFEx",
     long_description=long_description,
     long_description_content_type="text/markdown",
-    url="https://github.com/nategroebner/specufex/",
+    url="https://github.com/specufex/specufex/",
     packages=setuptools.find_packages(),
     classifiers=[
         "Programming Language :: Python :: 3",
