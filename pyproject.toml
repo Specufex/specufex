@@ -73,7 +73,6 @@ exclude = [
     "build",
     "docs",
 ]
-
 ignore = [
     "E203",
     "E501",

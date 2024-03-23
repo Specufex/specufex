@@ -10,7 +10,6 @@ from .modelutils import SaveableModel
 
 
 class BayesianHMM(SaveableModel):
-
     """BayesianHMM - class to fit hidden Markov model and calculate fingerprints.
 
     Arguments
