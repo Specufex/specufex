@@ -3,6 +3,7 @@
 __pycache__
 *.pyc
 *.npy
+
 SpecUFEx.egg-info/
 tests/.coverage
 .coverage
@@ -16,4 +17,3 @@ tutorials/data/DATA_T1214/
 tutorials/data/amatrice
 tutorials/amatrice_tutorial_full2days.ipynb
 tutorials/amatrice_makeH5_full2days.ipynb
-
