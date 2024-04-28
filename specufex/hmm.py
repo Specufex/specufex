@@ -35,7 +35,6 @@ class BayesianHMM(SaveableModel):
     def __init__(
         self, num_pat, gain, num_state=15, max_inner_ite=20, Neff=100000, verbose=0
     ):
-
         self.num_state = num_state
         self._max_inner_ite = max_inner_ite
         self.verbose = verbose
@@ -189,7 +188,6 @@ class BayesianHMM(SaveableModel):
         gams = []
 
         for Vi in V:
-
             len_seq = Vi.shape[1]
             V2 = np.diag(self.gain) @ Vi  # pull this outside of loop?
 

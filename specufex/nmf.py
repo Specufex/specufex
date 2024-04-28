@@ -26,7 +26,6 @@ class BayesianNonparametricNMF(SaveableModel):
     """
 
     def __init__(self, input_dims, num_pat=75):
-
         assert len(input_dims) == 3, "input_dims must be length 3"
         self.input_dims = input_dims
         self.N_eff, self.dim, _ = input_dims

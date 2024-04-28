@@ -1,11 +1,7 @@
 import obspy
-import obspy.core as oc
-from obspy import UTCDateTime
-from obspy.clients.fdsn import Client
 from obspy.clients.fdsn.mass_downloader import (
     CircularDomain,
     MassDownloader,
-    RectangularDomain,
     Restrictions,
 )
 
