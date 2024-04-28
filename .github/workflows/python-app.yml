@@ -1,7 +1,13 @@
 name: Build
 
 
-on: [push, pull_request]
+on:
+  push:
+    branches:
+      - main
+  pull_request:
+    branches:
+      - main
 
 jobs:
   build:
@@ -30,7 +36,7 @@ jobs:
           # flake8 tests --count --extend-ignore=E203 --show-source --statistics --max-line-length=88
           # flake8 --count --show-source --statistics
           # black . --check
-          # isort . --check
+          # ruff . --check
       - name: Test with pytest
         run: |
           pytest
