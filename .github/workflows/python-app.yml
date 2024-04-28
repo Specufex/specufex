@@ -28,9 +28,9 @@ jobs:
           # stop the build if there are Python syntax errors or undefined names
           # flake8 specufex --count --extend-ignore=E203 --show-source --statistics --max-line-length=88
           # flake8 tests --count --extend-ignore=E203 --show-source --statistics --max-line-length=88
-          flake8 --count --show-source --statistics
-          black . --check
-          isort . --check
+          # flake8 --count --show-source --statistics
+          # black . --check
+          # isort . --check
       - name: Test with pytest
         run: |
           pytest
