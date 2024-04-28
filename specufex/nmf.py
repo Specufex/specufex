@@ -81,7 +81,7 @@ class BayesianNonparametricNMF(SaveableModel):
         """
 
         # if np.any(X < 0):
-        if np.any([i<0 for i in X]):        
+        if np.any([i < 0 for i in X]):
             raise ValueError(
                 "All values of the spectrograms to be fit must be nonnegative!"
             )
