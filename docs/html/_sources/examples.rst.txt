@@ -10,5 +10,3 @@ The following pages contain examples of using SpecUFEx
     :maxdepth: 1
 
     example_geysers
-
-

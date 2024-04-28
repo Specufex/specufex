@@ -1,8 +1,9 @@
 # SpecUFEx
 
 ![SCOPED](https://img.shields.io/endpoint?url=https://runkit.io/wangyinz/scoped/branches/master/Specufex)
+[![Ruff](https://img.shields.io/endpoint?url=https://raw.githubusercontent.com/astral-sh/ruff/main/assets/badge/v2.json)](https://github.com/astral-sh/ruff)
 [![Code style: black](https://img.shields.io/badge/code%20style-black-000000.svg)](https://github.com/psf/black)
-![Build](https://github.com/ngroebner/specufex/actions/workflows/python-app.yml/badge.svg)
+![Build](https://github.com/ngroebner/specufex/actions/workflows/python-app.yml/badge.svg?branch=main)
 
 SpecUFEx stands for "Unsupervised Spectral Feature Extraction", an unsupervised machine learning algorithm to characterize time variations in spectral content of waveform data. We apply the method to earthquake seismograms. SpecUFEx combines probabilistic non-negative matrix factorization (NMF) and hidden Markov modeling (HMM) of spectrograms (short time Fourier transforms of waveform data) to generate "fingerprints", low dimensional representations of spectral variation through time. Both the NMF and HMM models are fit using stochastic variational inference; the method is therefore scalable to tens or hundreds of thousands of spectrograms. The resulting fingerprints can be used as features for either unsupervised (e.g. clustering) or supervised (e.g. classification) machine learning. The method is described in
 
@@ -105,4 +106,3 @@ and now you have NMF and HMM models that are ready to transform your data.
 ### Development
 
 If you are interested in contributing to SpecUFEx development, please fork this repository and create a new branch for your new code. Please write tests for the code you develop. We use [pytest](https://docs.pytest.org/en/7.1.x/) and [nox](https://nox.thea.codes/en/stable/) for writing and running tests. Code formtting is done with [black](https://black.readthedocs.io/en/stable/usage_and_configuration/the_basics.html), [flake8](https://flake8.pycqa.org/en/latest/), and [isort](https://pycqa.github.io/isort/). We have a github CI pipeline that automatically builds and tests any new merges, and it will fail if your code is not formatted! These are very easy to use, and can be installed into your development environment using pip and the `requirements-dev.txt` file. When your code is done, submit a pull request.
-

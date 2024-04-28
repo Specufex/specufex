@@ -36,6 +36,7 @@ dev = [
     "flake8-black",
     "flake8-isort",
     "flake8-pyprojecttoml",
+    "pre-commit"
     #"ruff"
 ]
 
