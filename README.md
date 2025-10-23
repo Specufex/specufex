@@ -22,6 +22,12 @@ git clone https://github.com/specufex/specufex.git
 cd specufex
 pip install .
 ```
+If you intend to use the example files with the tutorials, you may have to install [git LFS](https://git-lfs.com) (Large File System) and pull the files. Note: you need to be in te base directory of the repository for the ```git lfs pull``` command to work.
+
+``` shell
+git lfs install
+git lfs pull
+```
 
 Alternatively, a Dockerfile is included that builds a container running Jupyterlab with an environment setup for SpecUFEx. A prebuilt container is available through the [SCOPED](https://github.com/SeisSCOPED) project [here](https://github.com/SeisSCOPED/specufex/pkgs/container/specufex). Or you can directly pull the container if you have Docker:
 
